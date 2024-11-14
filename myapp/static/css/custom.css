@@ -34,3 +34,26 @@
     color:black !important;
 
 }
+.attachment-full {
+    width: 100%;
+    height: auto;
+}
+.company-logo ul {
+    display: flex;
+    flex-wrap: nowrap; /* Prevents wrapping to the next line */
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.company-logo li {
+    width: 12.5%; /* Ensure 8 images fit within 100% width */
+    box-sizing: border-box; /* Ensures padding/border don’t affect the width */
+    padding: 5px; /* Optional spacing between items */
+}
+
+.company-logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
