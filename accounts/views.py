@@ -64,7 +64,7 @@ def login_view(request):
         if user is not None:
             login(request,user)
             messages.success(request,'User has been successfully login')
-            return redirect('myapp:index')
+            return redirect('accounts:myAccount')
         else:
             messages.info(request,'Invalid Credentials')
             return render(request,'accounts/login.html')

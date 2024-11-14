@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from vendor.models import Vendor
 from menu.models import Category,FoodItem
 from django.db.models import Prefetch
@@ -6,6 +6,13 @@ from django.http import HttpResponse,JsonResponse
 from .context_processor import get_cart_counter,get_cart_amounts
 from .models import  Cart
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from accounts.models import UserProfile 
+
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
+
 
 # Create your views here.
 
@@ -120,7 +127,45 @@ def delete_cart(request,id):
 
             
         else:
-            return JsonResponse({'status':'Failed','message':'invalid request'})        
+            return JsonResponse({'status':'Failed','message':'invalid request'})   
+
+
+
+def search(request):
+  if request.method=='POST':  
+    address=request.POST['address']
+    rest_name=request.POST['rest_name']
+    lat=request.POST['lat']
+    lng=request.POST['lng']
+    radius=request.POST['radius']
+    radius=1.2
+    
+    
+    
+    fetch_vendors_by_fooditems=FoodItem.objects.filter(food_title__icontains=rest_name,is_available=True).values_list('vendor',flat=True)
+    
+    vendors=Vendor.objects.filter(Q(id__in=fetch_vendors_by_fooditems)|Q(vendor_name__icontains=rest_name,is_approved=True,user__is_active=True))
+
+    if lat and lng and radius:
+        pnt=GEOSGeometry('POINT(%s %s)'%(lng,lat))
+        vendors=Vendor.objects.filter(Q(id__in=fetch_vendors_by_fooditems)|Q(vendor_name__icontains=rest_name,is_approved=True,user__is_active=True),
+                                      user_profile__location__distance_lte=(pnt,D(km=radius))).annotate(distance=Distance("user_profile__location",pnt)).order_by('distance')
+
+        for v in vendors:
+            v.kms=round(v.distance.km,1)
+   
+    vendor_count=vendors.count()
+    context={
+        'vendors':vendors,
+        'vendor_count':vendor_count,
+        'source_location':address,
+    }
+
+
+    return render(request,'marketplace/listing.html',context)
+  else:
+      return redirect('marketplace:marketplace') 
+
 
 
 

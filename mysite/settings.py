@@ -12,10 +12,13 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'vendor',
     'menu',
     'marketplace',
+    'django.contrib.gis',
 ]
 
 MIDDLEWARE = [
@@ -88,7 +92,8 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Specify MySQL as the database engine
+        # 'ENGINE': 'django.db.backends.postgresql',  # Specify MySQL as the database engine
+        'ENGINE':'django.contrib.gis.db.backends.postgis',
         'NAME': config('NAME'),          # Name of your database
         'USER': config('USER'),          # Your database username
         'PASSWORD': config('PASSWORD'),           # Your database password
@@ -153,3 +158,11 @@ EMAIL_HOST_USER=config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS=config('EMAIL_USE_TLS',cast=bool)
 DEFAULT_FROM_EMAIL='FOODONLINE MARKETPLACE<mahasethmanish63@gmail.com>'
+
+os.environ['PATH'] += ';C:\\Users\\Manish Mahaseth\\Desktop\\multivendor4\\venv\\Lib\\site-packages\\osgeo'
+
+# Set the PROJ_LIB path for coordinate transformation
+os.environ['PROJ_LIB'] = 'C:\\Users\\Manish Mahaseth\\Desktop\\multivendor4\\venv\\Lib\\site-packages\\osgeo\\data\\proj'
+
+# Set GDAL_LIBRARY_PATH for GDAL to locate the library
+GDAL_LIBRARY_PATH = 'C:\\Users\\Manish Mahaseth\\Desktop\\multivendor4\\venv\\Lib\\site-packages\\osgeo\\gdal.dll'
