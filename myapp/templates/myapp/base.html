@@ -44,9 +44,9 @@
     {% block body %}
 
     {% endblock %}
-	
+	{% if request.path == '/' or 'profile' in request.path  %}
 	<script  defer src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" ></script>
-
+{% endif %}
 	 <script src="{% static 'js/custom.js' %}"></script>
 	
    {% include 'myapp/footer.html' %}

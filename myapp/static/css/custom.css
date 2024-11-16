@@ -57,3 +57,41 @@
     height: 100%;
     display: block;
 }
+
+table > tbody > tr > td{
+    border:none !important;
+}
+
+#opening_hours select{
+    padding:5px 10px !important ;
+}
+.btn-success.add_hour{
+    padding: 7px 15px 7px 15px ;
+}
+
+/* Dropdown is hidden by default */
+
+.delivery-dropdown {
+    display: none; /* Initially hidden */
+    position: absolute; /* Position relative to parent */
+    top: 100%; /* Position below the parent element */
+    left: 0; /* Align with the parent */
+    background-color: #fff; /* Background color */
+    border: 1px solid #ccc; /* Border for visibility */
+    z-index: 1000; /* Ensure it appears above other elements */
+    list-style: none; /* Remove bullet points */
+    padding: 10px 0; /* Add padding for dropdown items */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+}
+
+.delivery-dropdown li {
+    padding: 5px 20px; /* Add padding for items */
+}
+
+.delivery-dropdown li:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
+}
+
+.reviews-sortby-active:hover + .delivery-dropdown {
+    display: block; /* Show dropdown on hover */
+}

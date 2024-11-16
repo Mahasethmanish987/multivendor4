@@ -168,10 +168,122 @@ $(document).ready(function () {
       $("#total").html(grand_total);
     }
   }
+
+  $('.add_hour').on('click',function(e){
+    e.preventDefault()
+    
+    var day=document.getElementById('id_day').value
+    var from_hour=document.getElementById('id_from_hour').value
+    var to_hour=document.getElementById('id_to_hour').value
+    var is_closed=document.getElementById('id_is_closed').checked
+    var csrf_token=$('input[name=csrfmiddlewaretoken]').val()
+    var url= document.getElementById('add_hour_url').value
+   if(is_closed)
+   {
+    is_closed='True'
+    condition="day !=''"
+
+   }
+   else{
+    is_closed='False'
+    condition="day !='' && from_hour!='' && to_hour!=''"
+
+   }
+   if(eval(condition))
+   {
+     $.ajax({
+      type:'POST',
+      url:url,
+      data:{
+        'day':day,
+        'from_hour':from_hour,
+        'to_hour':to_hour,
+        'is_closed':is_closed,
+        'csrfmiddlewaretoken':csrf_token
+      },
+      success:function(response){
+        if(response.status=='success')
+        {
+          if(response.is_closed=='closed')
+          {
+            html='<tr id="hour-'+response.id+'"><td><b>'+response.day+'</b></td><td>closed</td><td><a href="" class="remove_hour" data-url="/vendor/opening_hours/remove/'+response.id+'/">Remove</a></td></tr>'
+                
+          }
+          else{
+           html='<tr id="hour-'+response.id+'"><td><b>'+response.day+'</b></td><td><b>'+response.from_hour+'</b>-<b>'+response.to_hour+'</b></td><td><a href="" class="remove_hour" data-url="/vendor/opening_hours/remove/'+response.id+'/">Remove</a></td></tr>'
+          }
+
+
+           $('.opening_hours').append(html)
+           document.getElementById('opening_hours').reset();
+        }
+        else{
+          console.log(response.error)
+          swal(response.message,'','info')
+        }
+      }
+
+     })
+
+   }
+   else{
+     swal('Please fill the all fields','','info')
+   }
+  })
+  //Remove opening hours
+    
+  $('.remove_hour').on('click',function(e)
+{
+  e.preventDefault()
+  const scrollPosition = window.scrollY;
+   url=$(this).attr('data-url')
+   $.ajax({
+    type:'GET',
+    url:url,
+    success:function(response)
+    {
+       if(response.status=='success')
+       {
+         document.getElementById('hour-'+response.id).remove()
+         window.scrollTo(0, scrollPosition);
+       }
+    }
+   })
+})
+$(document).on('click','.remove_hour',function(e){
+  e.preventDefault()
+  const scrollPosition = window.scrollY;
+   url=$(this).attr('data-url')
+   $.ajax({
+    type:'GET',
+    url:url,
+    success:function(response)
+    {
+       if(response.status=='success')
+       {
+         document.getElementById('hour-'+response.id).remove()
+         window.scrollTo(0, scrollPosition);
+       }
+    }
+   })
+
+})
+  
+
   //place the cart item quantity  on load
   $(".item_qty").each(function () {
     var the_id = $(this).attr("id");
     var qty = $(this).attr("data-qty");
     $("#" + the_id).html(qty);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const toggleButton = document.querySelector('.reviews-sortby-active');
+  const dropdown = document.querySelector('.delivery-dropdown');
+
+  toggleButton.addEventListener('click', function (event) {
+      event.preventDefault(); // Prevent default link behavior
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
   });
 });
